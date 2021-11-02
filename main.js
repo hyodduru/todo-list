@@ -1,78 +1,87 @@
 'use strict';
 
-const todoForm = document.querySelector('#todo__form');
-const todoInput = document.querySelector('#todo__input');
-const todoBtn = document.querySelector('.todo__plus');
+const input = document.querySelector('.footer__input');
+const addBtn = document.querySelector('.footer__btn');
+const items = document.querySelector('.items');
+let itemsArr = [];
+const savedItems = localStorage.getItem('items');
 
-const todoList = document.querySelector('#todo__lists');
-let todos = [];
-
-
-    
-const savedTodos = localStorage.getItem('todos')
-
-const parsedTodos = JSON.parse(savedTodos);
-
-if(savedTodos !== null){
-parsedTodos.forEach((todo)=> paintTodo(todo));
-todos = parsedTodos;
-}
-
-
-function saveTodo(){
-    localStorage.setItem('todos', JSON.stringify(todos))
-    
+if(savedItems!==null){
+    const parsedItems = JSON.parse(savedItems);
+    itemsArr = parsedItems;
+    parsedItems.forEach((item)=> paintItems(item))
 
 }
 
 
-function deleteTodo(event){
-    const list = event.target.parentNode;
-    list.remove();
-    todos = todos.filter((todo)=>
-        todo.id !== parseInt(list.id)
+
+function saveItems(){
+    localStorage.setItem('items', JSON.stringify(itemsArr))
+}
+
+function deleteItems(event){
+    
+    const deletedItem = event.target.parentNode.parentNode.parentNode;
+    deletedItem.remove();
+    itemsArr = itemsArr.filter((item)=>
+        item.id !==  parseInt(deletedItem.id)
     )
-    saveTodo();
-
-
-}
-function paintTodo(newTodo){
-    const li = document.createElement('li');
-    li.id = newTodo.id;
-    const span = document.createElement('span');
-    span.innerText = newTodo.name;
-
-    const button = document.createElement('button');
-    button.innerText = '🗑';
-    button.style.all = 'unset';
-    button.addEventListener('click', deleteTodo);
-  
-
-    todoList.appendChild(li);
-    li.appendChild(span);
-    li.appendChild(button);
-
+    saveItems();
 }
 
-todoBtn.addEventListener('click', ()=>{
-    
-    const newTodo = todoInput.value;
-    const newTodoObj = {name : newTodo,
-        id : Date.now()};
-    paintTodo(newTodoObj)
-    todoInput.value = "";
+
+
+function paintItems(text){
+    const itemRow = document.createElement('li');
+    itemRow.setAttribute('class','item__row');
+    itemRow.id = text.id;
+
+    const item = document.createElement('div');
+    item.setAttribute('class', 'item');
+
+    const name = document.createElement('span');
+    name.setAttribute('class', 'item__name');
+
+    name.innerText = text.name;
+
+    const deleteBtn = document.createElement('button');
+    deleteBtn.setAttribute('class','item__deletebtn');
+    deleteBtn.innerHTML = `<i class="fas fa-trash-alt"></i>`;
+    deleteBtn.addEventListener('click', deleteItems);
+
+    const divider = document.createElement('div');
+    divider.setAttribute('class','item__divider');
+
+   
+    item.appendChild(name);
+    item.appendChild(deleteBtn);
+    itemRow.appendChild(item);
+    itemRow.appendChild(divider);
+    items.appendChild(itemRow)
+}
+
+
+function onAdd(){
+    const text = input.value;
+    const textObj = {name : text, id :  Date.now(),}
+    if(text==""){
+        input.focus;
+        return;
+    }
+    paintItems(textObj);
+    itemsArr.push(textObj);
+    input.value ="";
+    input.focus();
+    saveItems();
+}
+
+
+addBtn.addEventListener('click',()=>{
+    onAdd();
 })
 
-
-todoForm.addEventListener('submit' ,(event)=>{
-    event.preventDefault();
-    
-    const newTodo = todoInput.value;
-    const newTodoObj = {name : newTodo,
-                        id : Date.now()};
-    todoInput.value ="";
-    paintTodo(newTodoObj);
-    todos.push(newTodoObj);
-    saveTodo();
-   
+input.addEventListener('keydown', (event)=>{
+    if(event.key==='Enter'){
+        onAdd();
+    }
 })

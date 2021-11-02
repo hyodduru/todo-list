@@ -7,24 +7,21 @@
     <title>Todo List</title>
     <link rel ="stylesheet" href ="style.css"></link>
     <script src="main.js" defer></script>
+    <script src="https://kit.fontawesome.com/675699ba81.js" crossorigin="anonymous"></script>
 </head>
 <body>
-    <section id="todo">
-    <div class="todo__container">
-        <div class="todo__title">
-            <h1>To Do List</h1>
-        </div>
-        <ul id ="todo__lists"></ul>
-        <div class="todo__last">
-            <form id ="todo__form">
-                <input id ="todo__input" type="text" placeholder = "What's your plan for today?"required>
-            </form>
-            
-            <button class="todo__plus">＋</button>    
-        </div>
-       
 
-    </div>
+    <section class = 'list'>
+        <div class="header">To Do List</div>
+        <ul class="items">
+        
+        </ul>
+        <div class="footer">
+            <input type="text" class="footer__input">
+            <button class="footer__btn">
+                <i class="fas fa-plus"></i>
+            </button>
+        </div>
     </section>
     
 </body>
